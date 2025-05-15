@@ -1,0 +1,38 @@
+Analisador léxico
+
+TIPOS PRIMITIVOS
+- Inteiro - int
+- Caracter - char
+- Float - flt 
+- Bool - boo
+
+OPERADORES ARITIMÉTICOS
+- Adição - +
+- Subtração - -
+- Multiplicação - # 
+- Divisao - /
+
+OPERAÇÕES LÓGICAS
+- E - &
+- OU - |
+- NOT - !
+
+OPERADORES ADICIONAIS
+- Igual - =
+- Diferente - !=
+- Maior - >
+- Menor - <
+- Maior igual - >=
+- Menor igual - <=
+
+ATRIBUIÇÃO - ->
+
+ESTRUTURA DE REPETIÇÃO
+- While - while
+- For - for
+- Do while - do while
+
+ESTRUTURA DE DECISÃO
+- if - if
+- else - else
+
