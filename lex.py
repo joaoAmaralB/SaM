@@ -1,13 +1,12 @@
 import ply.lex as lex
 
 tokens = (
-    'ID', 'INT', 'FLOAT', 'STRING',
+    'ID', 'INT', 'FLOAT', 'CHAR', 'STRING',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD',
     'EQ', 'NEQ', 'LT', 'LTE', 'GT', 'GTE',
     'ASSIGN',
-    'LPAREN', 'RPAREN', 'COLON',
+    'LPAREN', 'RPAREN', 'LSQUARE', 'RSQUARE', 'COLON', 'COMMA',
     'AND', 'OR', 'NOT',
-    'NEWLINE',
 )
 
 reserved = {
@@ -15,15 +14,14 @@ reserved = {
     'else': 'ELSE',
     'elif': 'ELIF',
     'while': 'WHILE',
-    'for': 'FOR',
     'def': 'DEF',
     'return': 'RETURN',
     'True': 'TRUE',
     'False': 'FALSE',
-    'None': 'NONE',
     'and': 'AND',
     'or': 'OR',
     'not': 'NOT',
+    'do': 'DO',
 }
 
 tokens += tuple(reserved.values())
@@ -64,6 +62,9 @@ t_ASSIGN   = r'='
 t_LPAREN   = r'\('
 t_RPAREN   = r'\)'
 t_COLON    = r':'
+t_LSQUARE = r'\['
+t_RSQUARE = r'\]'
+t_COMMA = r','
 
 t_ignore = ' \t'
 
@@ -108,16 +109,6 @@ def t_RETURN(t):
     r'return'
     t.value = 'RETURN'
     return t
-
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
-    t.type = 'NEWLINE'
-    return t
-
-def t_comment(t):
-    r'\#.*'
-    pass
 
 def t_error(t):
     print(f"Caractere ilegal: {t.value[0]}")

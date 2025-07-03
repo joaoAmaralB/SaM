@@ -38,38 +38,25 @@ class SaM:
             "STOP": self.stop
         }
 
-    def tokenize(self, code: str):
-        tokens = []
-        for line in code.splitlines():
-            clean = line.split(';',1)[0].strip()
-            if not clean:
-                continue
-            parts = clean.split()
-            if parts[0].upper() == 'LABEL':
-                self.labels[parts[1]] = len(tokens)
-            else:
-                tokens.extend(parts)
-        return tokens
-
     def pushimm(self):
-        value = int(self.code[self.pc]); self.pc += 1
+        value = int(self.tokens[self.pc]); self.pc += 1
         self.stack.append(value)
 
     def pushmmp(self):
-        offset = int(self.code[self.pc]); self.pc += 1
+        offset = int(self.tokens[self.pc]); self.pc += 1
         # assume MP = 0 base
         self.stack.append(self.memory[offset])
 
     def pushloc(self):
-        offset = int(self.code[self.pc]); self.pc += 1
+        offset = int(self.tokens[self.pc]); self.pc += 1
         self.stack.append(self.memory[offset])
 
     def load(self):
-        addr = int(self.code[self.pc]); self.pc += 1
+        addr = int(self.tokens[self.pc]); self.pc += 1
         self.stack.append(self.memory[addr])
 
     def store(self):
-        addr = int(self.code[self.pc]); self.pc += 1
+        addr = int(self.tokens[self.pc]); self.pc += 1
         value = self.stack.pop()
         if addr >= len(self.memory):
             self.memory.extend([0] * (addr - len(self.memory) + 1))
@@ -103,23 +90,23 @@ class SaM:
     def ge(self):     self.binary_op(lambda a,b: 1 if a>=b else 0)
 
     def jump(self):
-        label = self.code[self.pc]; self.pc += 1
+        label = self.tokens[self.pc]; self.pc += 1
         self.pc = self.labels[label]
 
     def jumpf(self):
-        label = self.code[self.pc]; self.pc += 1
+        label = self.tokens[self.pc]; self.pc += 1
         cond = self.stack.pop()
         if cond == 0:
             self.pc = self.labels[label]
 
     def jumpt(self):
-        label = self.code[self.pc]; self.pc += 1
+        label = self.tokens[self.pc]; self.pc += 1
         cond = self.stack.pop()
         if cond != 0:
             self.pc = self.labels[label]
 
     def call(self):
-        label = self.code[self.pc]; self.pc += 1
+        label = self.tokens[self.pc]; self.pc += 1
         # empilha retorno
         self.stack.append(self.pc)
         self.pc = self.labels[label]
@@ -151,10 +138,10 @@ class SaM:
         self.pc = 0
         self.running = True
         self.labels = {}
-        self.code = self.tokenize(code)
+        self.tokens = code
 
-        while self.running and self.pc < len(self.code):
-            token = self.code[self.pc]; self.pc += 1
+        while self.running and self.pc < len(self.tokens):
+            token = self.tokens[self.pc]; self.pc += 1
             action = self.command_actions.get(token)
             if action:
                 action()
