@@ -4,9 +4,8 @@ tokens = (
     'ID', 'INT', 'FLOAT', 'CHAR', 'STRING',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD',
     'EQ', 'NEQ', 'LT', 'LTE', 'GT', 'GTE',
-    'ASSIGN',
-    'LPAREN', 'RPAREN', 'LSQUARE', 'RSQUARE', 'COLON', 'COMMA',
-    'AND', 'OR', 'NOT',
+    'ASSIGN', 'COMMA', 'COLON',
+    'LPAREN', 'RPAREN', 'LSQUARE', 'RSQUARE',
 )
 
 reserved = {
@@ -15,38 +14,22 @@ reserved = {
     'elif': 'ELIF',
     'while': 'WHILE',
     'def': 'DEF',
-    'return': 'RETURN',
     'True': 'TRUE',
     'False': 'FALSE',
     'and': 'AND',
     'or': 'OR',
     'not': 'NOT',
     'do': 'DO',
+    'int': 'INT_TYPE',
+    'str': 'STR_TYPE',
+    'fl': 'FLOAT_TYPE',
+    'return': 'RETURN',
+    'print': 'PRINT'
 }
 
 tokens += tuple(reserved.values())
 
-token_samcode_map = {
-    'PLUS': 'ADD',
-    'MINUS': 'SUB',
-    'TIMES': 'MUL',
-    'DIVIDE': 'DIV',
-    'MOD': 'MOD',
-    'EQ': 'EQ',
-    'NEQ': 'NEQ',
-    'GT': 'GT',
-    'LT': 'LT',
-    'GTE': 'GTE',
-    'LTE': 'LTE',
-    'AND': 'AND',
-    'OR': 'OR',
-    'NOT': 'NOT',
-    'ASSIGN': 'STORE',
-    'RETURN': 'RETURN',
-    'IF': 'JUMPIF',
-    'ELSE': 'JUMP',
-}
-
+# Expressões regulares simples
 t_PLUS     = r'\+'
 t_MINUS    = r'-'
 t_TIMES    = r'\*'
@@ -68,6 +51,10 @@ t_COMMA = r','
 
 t_ignore = ' \t'
 
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
 def t_FLOAT(t):
     r'\d+\.\d+'
     t.value = float(t.value)
@@ -86,28 +73,6 @@ def t_STRING(t):
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID')
-    if t.type in token_samcode_map:
-        t.value = token_samcode_map[t.type]
-    return t
-
-def t_AND(t):
-    r'and'
-    t.value = 'AND'
-    return t
-
-def t_OR(t):
-    r'or'
-    t.value = 'OR'
-    return t
-
-def t_NOT(t):
-    r'not'
-    t.value = 'NOT'
-    return t
-
-def t_RETURN(t):
-    r'return'
-    t.value = 'RETURN'
     return t
 
 def t_error(t):

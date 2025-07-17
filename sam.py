@@ -5,8 +5,14 @@ class SaM:
         self.pc = 0
         self.running = True
         self.labels = {}
+        self.fbr = 0  # Frame Base Register
+
         self.command_actions = {
+            "ADDSP": self.addsp,
+            "STOREOFF": self.storeoff,
+            "PUSHOFF": self.pushoff,
             "PUSHIMM": self.pushimm,
+            "POPFBR": self.popfbr,
             "PUSHMMP": self.pushmmp,
             "PUSHLOC": self.pushloc,
             "LOAD": self.load,
@@ -27,6 +33,8 @@ class SaM:
             "LE": self.le,
             "GT": self.gt,
             "GE": self.ge,
+            "GREATER": self.greater,
+            "ISNIL": self.isnil,
             "JUMP": self.jump,
             "JUMPF": self.jumpf,
             "JUMPT": self.jumpt,
@@ -35,8 +43,29 @@ class SaM:
             "DUMP": self.dump,
             "PRINT": self.print_top,
             "READ": self.read,
-            "STOP": self.stop
+            "STOP": self.stop,
+            "EXIT": self.exit
         }
+
+    def addsp(self):
+        value = int(self.tokens[self.pc]); self.pc += 1
+        if value > 0:
+            self.stack.extend([0] * value)
+        elif value < 0:
+            for _ in range(-value):
+                self.stack.pop()
+
+    def storeoff(self):
+        offset = int(self.tokens[self.pc]); self.pc += 1
+        value = self.stack.pop()
+        addr = self.fbr + offset
+        if addr >= len(self.stack):
+            self.stack.extend([0] * (addr - len(self.stack) + 1))
+        self.stack[addr] = value
+
+    def pushoff(self):
+        offset = int(self.tokens[self.pc]); self.pc += 1
+        self.stack.append(self.stack[self.fbr + offset])
 
     def pushimm(self):
         value = int(self.tokens[self.pc]); self.pc += 1
@@ -44,7 +73,6 @@ class SaM:
 
     def pushmmp(self):
         offset = int(self.tokens[self.pc]); self.pc += 1
-        # assume MP = 0 base
         self.stack.append(self.memory[offset])
 
     def pushloc(self):
@@ -88,6 +116,15 @@ class SaM:
     def le(self):     self.binary_op(lambda a,b: 1 if a<=b else 0)
     def gt(self):     self.binary_op(lambda a,b: 1 if a>b else 0)
     def ge(self):     self.binary_op(lambda a,b: 1 if a>=b else 0)
+    def greater(self): self.binary_op(lambda a,b: 1 if a>b else 0)
+
+    def isnil(self):
+        value = self.stack.pop()
+        self.stack.append(1 if value == 0 else 0)
+
+    def not_op(self):
+        a = self.stack.pop()
+        self.stack.append(0 if a else 1)
 
     def jump(self):
         label = self.tokens[self.pc]; self.pc += 1
@@ -105,18 +142,39 @@ class SaM:
         if cond != 0:
             self.pc = self.labels[label]
 
+    def jumpc(self):
+        label = self.tokens[self.pc]; self.pc += 1
+        cond = self.stack.pop()
+        if cond != 0:
+            self.pc = self.labels[label]
+
     def call(self):
         label = self.tokens[self.pc]; self.pc += 1
-        # empilha retorno
         self.stack.append(self.pc)
         self.pc = self.labels[label]
 
     def ret(self):
         self.pc = self.stack.pop()
 
+    def link(self):
+        self.stack.append(self.fbr)
+        self.fbr = len(self.stack) - 1
+
+    def popfbr(self):
+        self.fbr = self.stack.pop()
+
+    def jsr(self):
+        label = self.tokens[self.pc]; self.pc += 1
+        self.stack.append(self.pc)
+        self.pc = self.labels[label]
+
+    def jumpind(self):
+        self.pc = self.stack.pop()
+
     def dump(self):
         print("STACK:", self.stack)
         print("MEMORY:", self.memory)
+        print("FBR:", self.fbr)
 
     def print_top(self):
         print(self.stack[-1])
@@ -128,17 +186,27 @@ class SaM:
     def stop(self):
         self.running = False
 
-    def not_op(self):
-        a = self.stack.pop()
-        self.stack.append(0 if a else 1)
+    def exit(self):
+        self.running = False
 
-    def run(self, code: str):
+    def run(self, code: list):
         self.memory = []
         self.stack = []
         self.pc = 0
         self.running = True
         self.labels = {}
         self.tokens = code
+
+        # Indexação de labels
+        i = 0
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            if token.endswith(":"):
+                label_name = token[:-1]
+                self.labels[label_name] = i + 1
+                self.tokens.pop(i)
+            else:
+                i += 1
 
         while self.running and self.pc < len(self.tokens):
             token = self.tokens[self.pc]; self.pc += 1

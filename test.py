@@ -1,19 +1,22 @@
 from lex import lexer
-from sam import SaM
+from parser import Parser
 
 codigo = '''
-a = 5 + 3
-b = 5 * 4
-return a
+int a = 5 + 3
+int b = 5 * 4
+a + b
+
+str palavra = "teste"
 '''
-
 lexer.input(codigo)
+parser = Parser(lexer)
+parser.parse_code()
 
-tokens = [lex.type for lex in lexer if lex.type != 'NEWLINE']
-tokens = [lex.value for lex in lexer if lex.type != 'ID']
+# lexer.input(codigo)
 
-print(tokens)
-
-sam = SaM()
-
-sam.run(code=tokens)
+# print("Tokens:")
+# while True:
+#     tok = lexer.token()
+#     if not tok:
+#         break
+#     print(f"Tipo: {tok.type}: {tok.value}")
