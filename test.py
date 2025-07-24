@@ -2,11 +2,20 @@ from lex import lexer
 from parser import Parser
 
 codigo = '''
-int a = 5 + 3
-int b = 5 * 4
-a + b
+int a;
 
-str palavra = "teste"
+def quadrado(int n) {
+    return n * n;
+}
+
+def main() {
+    int x;
+    x = 4;
+    int y;
+    y = quadrado(x);
+    print(y);
+}
+
 '''
 lexer.input(codigo)
 parser = Parser(lexer)

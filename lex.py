@@ -6,6 +6,7 @@ tokens = (
     'EQ', 'NEQ', 'LT', 'LTE', 'GT', 'GTE',
     'ASSIGN', 'COMMA', 'COLON',
     'LPAREN', 'RPAREN', 'LSQUARE', 'RSQUARE',
+    'LBRACE', 'RBRACE', 'SEMI',
 )
 
 reserved = {
@@ -30,24 +31,28 @@ reserved = {
 tokens += tuple(reserved.values())
 
 # Expressões regulares simples
-t_PLUS     = r'\+'
-t_MINUS    = r'-'
-t_TIMES    = r'\*'
-t_DIVIDE   = r'/'
-t_MOD      = r'%'
-t_EQ       = r'=='
-t_NEQ      = r'!='
-t_LT       = r'<'
-t_LTE      = r'<='
-t_GT       = r'>'
-t_GTE      = r'>='
-t_ASSIGN   = r'='
-t_LPAREN   = r'\('
-t_RPAREN   = r'\)'
-t_COLON    = r':'
-t_LSQUARE = r'\['
-t_RSQUARE = r'\]'
-t_COMMA = r','
+t_PLUS      = r'\+'
+t_MINUS     = r'-'
+t_TIMES     = r'\*'
+t_DIVIDE    = r'/'
+t_MOD       = r'%'
+t_EQ        = r'=='
+t_NEQ       = r'!='
+t_LT        = r'<'
+t_LTE       = r'<='
+t_GT        = r'>'
+t_GTE       = r'>='
+t_ASSIGN    = r'='
+t_LPAREN    = r'\('
+t_RPAREN    = r'\)'
+t_COLON     = r':'
+t_LSQUARE   = r'\['
+t_RSQUARE   = r'\]'
+t_COMMA     = r','
+t_LBRACE    = r'\{'
+t_RBRACE    = r'\}'
+t_SEMI      = r';'
+
 
 t_ignore = ' \t'
 

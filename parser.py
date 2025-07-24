@@ -1,8 +1,4 @@
 
-
-from grammar import Grammar
-
-
 class Parser:
     def __init__(self, lexer):
         self.lexer = lexer
@@ -36,10 +32,4 @@ class Parser:
         pass
 
     def parse_code(self):
-        grammar = Grammar()
-
-        type, value = self.get_token()
-
-        # print(type, value)
-
-        self.step()
+        pass
