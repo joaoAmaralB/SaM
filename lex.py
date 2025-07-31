@@ -10,27 +10,15 @@ tokens = (
 )
 
 reserved = {
-    'if': 'IF',
-    'else': 'ELSE',
-    'elif': 'ELIF',
-    'while': 'WHILE',
-    'def': 'DEF',
-    'True': 'TRUE',
-    'False': 'FALSE',
-    'and': 'AND',
-    'or': 'OR',
-    'not': 'NOT',
-    'do': 'DO',
-    'int': 'INT_TYPE',
-    'str': 'STR_TYPE',
-    'fl': 'FLOAT_TYPE',
-    'return': 'RETURN',
-    'print': 'PRINT'
+    'if': 'IF', 'else': 'ELSE', 'elif': 'ELIF',
+    'while': 'WHILE', 'def': 'DEF', 'True': 'TRUE', 'False': 'FALSE',
+    'and': 'AND', 'or': 'OR', 'not': 'NOT', 'do': 'DO',
+    'int': 'INT_TYPE', 'str': 'STR_TYPE', 'fl': 'FLOAT_TYPE',
+    'return': 'RETURN', 'print': 'PRINT'
 }
 
 tokens += tuple(reserved.values())
 
-# Expressões regulares simples
 t_PLUS      = r'\+'
 t_MINUS     = r'-'
 t_TIMES     = r'\*'
@@ -52,7 +40,6 @@ t_COMMA     = r','
 t_LBRACE    = r'\{'
 t_RBRACE    = r'\}'
 t_SEMI      = r';'
-
 
 t_ignore = ' \t'
 
@@ -81,7 +68,7 @@ def t_ID(t):
     return t
 
 def t_error(t):
-    print(f"Caractere ilegal: {t.value[0]}")
+    print(f"Illegal character: {t.value[0]}")
     t.lexer.skip(1)
 
 lexer = lex.lex()

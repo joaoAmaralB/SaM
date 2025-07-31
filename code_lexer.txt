@@ -1,0 +1,13 @@
+int a;
+
+def quadrado(int n) {
+    return n * n;
+}
+
+def main() {
+    int x;
+    x = 4;
+    int y;
+    y = quadrado(x);
+    print(y);
+}

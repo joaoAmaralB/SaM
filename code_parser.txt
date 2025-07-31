@@ -1,0 +1,55 @@
+int a;
+
+def quadrado(int n) {
+    n = n + 35;
+    return n * n;
+}
+
+def main() {
+    int x;
+    x = 4;
+    int y;
+    y = quadrado(x);
+    print(y);
+    while (true) {
+        x = x + 1;
+        if (x > 1) {
+            print("olá");
+            if (x == 12) {
+                return 34;
+            }
+        }
+        else {
+            do {
+                x = x / 2;
+                if (x < 0) {
+                    quadrado(x);
+                    while ((x == 3 or x == 6) and x < 0) {
+                        x = x + 2;
+                        return x;
+                    }
+                }
+            } while (x < 3);
+            print("tchau");
+        }
+
+        if (not x) {
+            print(x);
+        }
+
+        while ((y == x or x < y) or (x * x == 24 or y / y == 2)) {
+        }
+
+        while ((y == x and x < y) and (x * x == 24 or y / y == 2)) {
+        }
+
+        while (not (y == x and x < y) and not (x * x == 24 or y / y == 2)) {
+        }
+
+        while (y == x and x < y and x * x == 24 and y / y == 2) {
+        }
+
+        while (not y == x and not x < y and not x * x == 24 and not y / y == 2) {
+        }
+    }
+}

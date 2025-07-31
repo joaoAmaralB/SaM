@@ -1,107 +1,102 @@
-# Definição da gramática LL(1)
+Programa → DeclLista
 
-# Símbolo inicial
-Programa -> DeclLista
+DeclLista → Decl DeclLista | ε
 
-# Lista de declarações (funções ou variáveis globais)
-DeclLista -> Decl DeclLista | ε
+Decl → VarDecl | FuncDecl
 
-# Declaração (pode ser uma função ou uma declaração de variável)
-Decl -> VarDecl | FuncDecl
+VarDecl → Tipo ID OpcionalArray ;
 
-# Declaração de variável
-VarDecl -> Tipo ID OpcionalArray ';'
+Tipo → INT_TYPE | FLOAT_TYPE | STR_TYPE
 
-# Tipos primitivos
-Tipo -> INT_TYPE | FLOAT_TYPE | STR_TYPE
+OpcionalArray → LSQUARE INT RSQUARE | ε
 
-# Suporte opcional para arrays
-OpcionalArray -> LSQUARE INT RSQUARE | ε
+FuncDecl → DEF ID LPAREN Parametros RPAREN Bloco
 
-# Declaração de função
-FuncDecl -> DEF ID LPAREN Parametros RPAREN Bloco
+Parametros → ParamList | ε
 
-# Parâmetros de função
-Parametros -> ParamList | ε
-ParamList -> Param ParamListCont
-ParamListCont -> COMMA Param ParamListCont | ε
-Param -> Tipo ID OpcionalArray
+ParamList → Param ParamListCont
 
-# Bloco de código (corpo da função ou de um IF/ELSE/WHILE/DO-WHILE)
-Bloco -> '{' CmdLista '}'
+ParamListCont → COMMA Param ParamListCont | ε
 
-# Lista de comandos
-CmdLista -> Cmd CmdLista | ε
+Param → Tipo ID OpcionalArray
 
-# Comandos
-Cmd -> VarDecl
-     | AtribuicaoCmd
+Bloco → { CmdLista }
+
+CmdLista → Cmd CmdLista | ε
+
+Cmd → VarDecl
+     | CmdID
      | IfCmd
      | WhileCmd
      | DoWhileCmd
-     | ChamadaFuncaoCmd ';'
      | ReturnCmd
      | PrintCmd
 
-# Comando de atribuição
-AtribuicaoCmd -> ID IndiceOpcional ASSIGN Expressao ';'
+CmdID → ID CmdIDSufixo
 
-# Indice opcional para acesso a array
-IndiceOpcional -> LSQUARE Expressao RSQUARE | ε
+CmdIDSufixo → IndiceOpcional ASSIGN Expr ;
+            | LPAREN Argumentos RPAREN ;
 
-# Comando IF
-IfCmd -> IF Expressao THEN Bloco ElseParte
+IndiceOpcional → LSQUARE Expr RSQUARE | ε
 
-# Parte ELSE opcional para o IF
-ElseParte -> ELSE Bloco | ε
+IfCmd → IF Expr Bloco ElseParte
 
-# Comando WHILE
-WhileCmd -> WHILE Expressao Bloco
+ElseParte → ELSE Bloco | ε
 
-# Comando DO-WHILE
-DoWhileCmd -> DO Bloco WHILE Expressao ';'
+WhileCmd → WHILE Expr Bloco
 
-# Chamada de função como comando
-ChamadaFuncaoCmd -> ID LPAREN Argumentos RPAREN
+DoWhileCmd → DO Bloco WHILE Expr ;
 
-# Argumentos de função
-Argumentos -> ArgList | ε
-ArgList -> Expressao ArgListCont
-ArgListCont -> COMMA Expressao ArgListCont | ε
+ReturnCmd → RETURN ReturnSufixo
 
-# Comando RETURN
-ReturnCmd -> RETURN ExpressaoOpcional ';'
-ExpressaoOpcional -> Expressao | ε
+ReturnSufixo → Expr ; | ;
 
-# Comando PRINT
-PrintCmd -> PRINT LPAREN Expressao RPAREN ';'
+PrintCmd → PRINT LPAREN Expr RPAREN ;
 
-# Expressões (prioridade e associatividade)
-Expressao -> AndExpressao ComparacaoExpressao
+Argumentos → ArgList | ε
 
-ComparacaoExpressao -> OR AndExpressao ComparacaoExpressao | ε
+ArgList → Expr ArgListCont
 
-AndExpressao -> NotExpressao LogicaANDExpressao
+ArgListCont → COMMA Expr ArgListCont | ε
 
-LogicaANDExpressao -> AND NotExpressao LogicaANDExpressao | ε
+Expr → LogicalOr
 
-NotExpressao -> NOT RelacionalExpressao | RelacionalExpressao
+LogicalOr → LogicalAnd LogicalOrTail
 
-RelacionalExpressao -> AdicaoExpressao RelacionalOp AdicaoExpressao | AdicaoExpressao
+LogicalOrTail → OR LogicalAnd LogicalOrTail | ε
 
-RelacionalOp -> EQ | NEQ | LT | LTE | GT | GTE
+LogicalAnd → UnaryNot LogicalAndTail
 
-AdicaoExpressao -> MultiplicacaoExpressao AdicaoOp MultiplicacaoExpressao | MultiplicacaoExpressao
+LogicalAndTail → AND UnaryNot LogicalAndTail | ε
 
-AdicaoOp -> PLUS | MINUS
+UnaryNot → NOT Comparison | Comparison
 
-MultiplicacaoExpressao -> PrimariaExpressao MultiplicacaoOp PrimariaExpressao | PrimariaExpressao
+Comparison → Additive ComparisonTail
 
-MultiplicacaoOp -> TIMES | DIVIDE | MOD
+ComparisonTail → RelOp Additive | ε
 
-PrimariaExpressao -> INT | FLOAT | STRING
-                   | ID IndiceOuChamadaOpcional
-                   | LPAREN Expressao RPAREN
+RelOp → EQ | NEQ | LT | LTE | GT | GTE
 
-# Indice ou chamada de função para IDs
-IndiceOuChamadaOpcional -> IndiceOpcional | LPAREN Argumentos RPAREN | ε
+Additive → Multiplicative AdditiveTail
+
+AdditiveTail → AddOp Multiplicative AdditiveTail | ε
+
+AddOp → PLUS | MINUS
+
+Multiplicative → Primary MultiplicativeTail
+
+MultiplicativeTail → MulOp Primary MultiplicativeTail | ε
+
+MulOp → TIMES | DIVIDE | MOD
+
+Primary → INT
+        | FLOAT
+        | STRING
+        | ID Postfix
+        | LPAREN Expr RPAREN
+
+Postfix → Indice | FunctionCall | ε
+
+Indice → LSQUARE Expr RSQUARE
+
+FunctionCall → LPAREN Argumentos RPAREN
