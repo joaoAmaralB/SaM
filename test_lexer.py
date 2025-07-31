@@ -1,7 +1,7 @@
 from lex import lexer
 from utils import read_code_from_file
 
-codigo = read_code_from_file("code_lexer.txt")
+codigo = read_code_from_file("codes/code_lexer.txt")
 
 lexer.input(codigo)
 

@@ -2,7 +2,7 @@ from lex import lexer
 from parser import Parser, ParserError
 from utils import read_code_from_file
 
-codigo = read_code_from_file("code_parser.txt")
+codigo = read_code_from_file("codes/code_parser.txt")
 
 lexer.input(codigo)
 tokens = list(lexer)

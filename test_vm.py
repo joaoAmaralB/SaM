@@ -2,7 +2,7 @@ from sam import SaM
 
 vm = SaM()
 
-with open("code_vm.txt", "r") as f:
+with open("codes/code_vm.txt", "r") as f:
     raw_code = f.read()
 
 code = []
