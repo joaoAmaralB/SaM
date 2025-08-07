@@ -10,7 +10,7 @@ parser
 code
 ```
 
-To test the `vm`, `lexer`, `parser` or `code` use the .txt files for each of them inside the codes folder, the files are:
+To test the `vm`, `lexer`, `parser` or `code` use the .txt files for each of them inside the `codes` folder, the files are:
 ```
 code_vm.txt
 code_lexer.txt
